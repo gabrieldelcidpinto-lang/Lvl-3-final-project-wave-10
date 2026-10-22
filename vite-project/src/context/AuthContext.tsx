@@ -32,17 +32,39 @@ export const AuthContextProvider = ({ children }) => {
     });
   }, []);
 
+  //Sign in
+
+  const signInUser = async ({ email, password }) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+      if (error) {
+        console.error("An error occurred signing in: ", error);
+        return { success: false, error: error.message };
+      }
+      console.log("Sign in successfull: ", data);
+      return { success: true, data: data, message: "Sign in successfull." };
+    } catch (error) {
+      //why is error working on line 43 but not on this line?
+      console.error("An error occurred signin in: ", error);
+    }
+  };
+
   //Sign out
 
-  const signOut = () => {
-    const { error } = supabase.auth.signOut({ scope: "local" });
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut({ scope: "local" });
     if (error) {
       console.error("There was an error signing out: ", error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ session, signUpNewUser, signOut }}>
+    <AuthContext.Provider
+      value={{ session, signUpNewUser, signOut, signInUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

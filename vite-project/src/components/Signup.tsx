@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 
 export default function Signup() {
@@ -9,6 +9,23 @@ export default function Signup() {
   const [loading, setLoading] = useState(false); // Prevents/Blocks multiple signup requests while loading
 
   const { session, signUpNewUser } = UserAuth();
+  const navigate = useNavigate();
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const result = await signUpNewUser(email, password);
+
+      if (result.success) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      setError("An error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
