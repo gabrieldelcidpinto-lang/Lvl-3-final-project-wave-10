@@ -1,35 +1,19 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { UserAuth } from "../context/AuthContext";
+import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "../config/supabaseClient";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Prevents/Blocks multiple signup requests while loading
-
-  const { session, signUpNewUser } = UserAuth();
-  const navigate = useNavigate();
-
-  const handleSignUp = async (e) => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      const result = await signUpNewUser(email, password);
-
-      if (result.success) {
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      setError("An error occurred.");
-    } finally {
-      setLoading(false);
-    }
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) console.error(error.message);
   };
 
   return (
     <div>
-      <form className="max-w-md m-auto pt-24">
+      <form className="max-w-md m-auto pt-24" onSubmit={handleSignUp}>
         <h2 className="font-bold pb-2">Sign up</h2>
         <p>
           Already have an account? <Link to="/signin">Sign in</Link>
@@ -53,17 +37,18 @@ export default function Signup() {
             placeholder="Email"
             className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
             type="email"
+            required
             onChange={(e) => setEmail(e.target.value)} //Updates the email state with current input
           />
           <input
             placeholder="Password"
             className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
             type="password"
+            required
             onChange={(e) => setPassword(e.target.value)} //Updates the password state with current input
           />
           <button
             type="submit"
-            disabled={loading}
             className="mt-6 w-full border border-white rounded hover:bg-gray-700"
           >
             Sign up

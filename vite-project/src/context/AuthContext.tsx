@@ -1,25 +1,23 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useEffect, useState, useContext, type PropsWithChildren } from "react";
+import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../config/supabaseClient";
 
-const AuthContext = createContext();
+type AuthContextValue = {
+  session: Session | null | undefined;
+  signUpNewUser: (email: string, password: string) => Promise<void>;
+  signInUser: (credentials: { email: string; password: string }) => Promise<unknown>;
+  signOut: () => Promise<void>;
+};
 
-export const AuthContextProvider = ({ children }) => {
-  //Children has no type which is generating an error
-  const [session, setSession] = useState(undefined);
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+export const AuthContextProvider = ({ children }: PropsWithChildren) => {
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
 
   //New user sign up
-  const signUpNewUser = async () => {
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    if (error) {
-      console.error("There was an error signing up:", error);
-      return { success: false, error: error };
-    }
-
-    return { succes: true, data: data };
+  const signUpNewUser = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
   };
 
   useEffect(() => {
@@ -27,14 +25,16 @@ export const AuthContextProvider = ({ children }) => {
       setSession(session); //Session has no type which is generating an error
     });
 
-    supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session); //Session has no type which is generating an error
     });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   //Sign in
 
-  const signInUser = async ({ email, password }) => {
+  const signInUser = async ({ email, password }: { email: string; password: string }) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email,
@@ -71,5 +71,7 @@ export const AuthContextProvider = ({ children }) => {
 };
 
 export const UserAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("UserAuth must be used within AuthContextProvider.");
+  return context;
 };
