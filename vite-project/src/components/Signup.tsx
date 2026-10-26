@@ -5,10 +5,16 @@ import { supabase } from "../config/supabaseClient";
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
     const { error } = await supabase.auth.signUp({ email, password });
-    if (error) console.error(error.message);
+    if (error) {
+      setError("Sign up failed.");
+      console.error(error.message);
+    }
   };
 
   return (
@@ -53,6 +59,7 @@ export default function Signup() {
           >
             Sign up
           </button>
+          {error && <p className="text-red-600 text-center">{error}</p>}
         </div>
       </form>
     </div>
