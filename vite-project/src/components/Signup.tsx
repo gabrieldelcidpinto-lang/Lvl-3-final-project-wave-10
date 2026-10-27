@@ -6,15 +6,20 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
       setError("Sign up failed.");
       console.error(error.message);
+      return;
     }
+    setSuccess("Sign up successful!");
+    console.log("Sign up successful!");
   };
 
   return (
@@ -60,6 +65,7 @@ export default function Signup() {
             Sign up
           </button>
           {error && <p className="text-red-600 text-center">{error}</p>}
+          {success && <p className="text-green-600 text-center">{success}</p>}
         </div>
       </form>
     </div>

@@ -1,15 +1,20 @@
 import { useState, type FormEvent } from "react";
 import { supabase } from "../config/supabaseClient";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
+  const navigate = useNavigate();
+
+  //Put inside AuthContext.tsx under sign in?
   const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
@@ -19,6 +24,11 @@ export default function Signin() {
       console.error(error);
       return;
     }
+    setSuccess("Successfully signed in!");
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1500);
+    console.log("Successfully signed in!");
     return {
       success: true,
       data: data,
@@ -28,7 +38,7 @@ export default function Signin() {
   return (
     <div>
       <form className="max-w-md m-auto pt-24" onSubmit={handleSignIn}>
-        <h2 className="font-bold pb-2">Sign up</h2>
+        <h2 className="font-bold pb-2">Sign in</h2>
         <p>
           Don't have an account? <Link to="/signup">Sign up</Link>
         </p>
@@ -68,8 +78,46 @@ export default function Signin() {
             Sign in
           </button>
           {error && <p className="text-red-600 text-center">{error}</p>}
+          {success && <p className="text-green-600 text-center">{success}</p>}
         </div>
       </form>
     </div>
   );
 }
+
+/** Set loading example
+ *  
+  //Put inside AuthContext.tsx under sign in?
+  const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      setSuccess("Successfully signed in!");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+      console.log("Successfully signed in!");
+      return {
+        success: true,
+        data: data,
+        message: "Successfully signed in!",
+      };
+    } catch {
+      if (error) {
+        setError("Wrong email or password.");
+        console.error(error);
+        return;
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+}
+*/
