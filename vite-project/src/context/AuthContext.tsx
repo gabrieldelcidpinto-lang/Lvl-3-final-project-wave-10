@@ -69,16 +69,6 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  //Session Access Token
-
-  const sessionAccessToken = jwt.sign(
-    {
-      data: "session",
-    },
-    "secret",
-    { expiresIn: "1h" },
-  );
-
   //Sign out
 
   const signOut = async () => {
@@ -103,7 +93,3 @@ export const UserAuth = () => {
     throw new Error("UserAuth must be used within AuthContextProvider.");
   return context;
 };
-
-//Probably not. In your React app, Supabase handles access tokens for you. After signing in, read the token from the session, for example data.session?.access_token; you generally shouldn’t create your own JWT for Supabase authentication.
-
-//jsonwebtoken is mainly for signing and verifying tokens on a trusted server. Don’t put its signing secret in frontend code, because users could extract it from the app. In your AuthContext.tsx, sessionAccessToken is also unused, so you can remove that block unless you have a specific use for it.

@@ -2,6 +2,17 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
+## Supabase local development
+
+Start the local Supabase stack with `supabase start`. Create a `.env` file in the repository root (the parent directory of `vite-project`) with the local API URL and anon key:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-local-anon-key
+```
+
+The app also accepts `VITE_SUPABASE_URL` with either `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY`. Keep service-role keys out of browser environment variables; use the anon/publishable key with appropriate Row Level Security policies.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
