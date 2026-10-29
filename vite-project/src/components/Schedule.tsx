@@ -1,3 +1,10 @@
+import { isUpcoming } from "../utils";
+import { useState } from "react";
+import { games, type Game } from "../data";
+import { Ico } from "./Icon";
+import { StatusBadge } from "./SatusBadge";
+import { fmtShort } from "../utils";
+
 export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
   const [tab, setTab] = useState<"all" | "upcoming" | "past">("all");
   const [search, setSearch] = useState("");

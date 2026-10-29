@@ -1,7 +1,12 @@
+import { Ico } from "./Icon";
+import { fmtShort } from "../utils";
+import { useState } from "react";
+import { games, blocks, type CalendarBlock, type Game } from "../data";
+
 export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
   const [year, setYear] = useState(2026);
   const [month, setMonth] = useState(9);
-  const [calBlocks, setCalBlocks] = useState<CalendarBlock[]>(initialBlocks);
+  const [calBlocks, setCalBlocks] = useState<CalendarBlock[]>(blocks);
   const [showAdd, setShowAdd] = useState(false);
   const [nb, setNb] = useState({
     type: "Personal" as CalendarBlock["type"],

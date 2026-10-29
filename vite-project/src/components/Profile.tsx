@@ -1,3 +1,5 @@
+import { currentUser } from "../data";
+
 export function ProfileView() {
   function ProfileCard() {
     return (

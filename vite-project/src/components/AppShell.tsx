@@ -1,3 +1,14 @@
+import { useState } from "react";
+import { Ico } from "./Icon";
+import { currentUser, games, type Game } from "../data";
+import { Dashboard } from "./Dashboard";
+import { CalendarView } from "./Calendar";
+import { Schedule } from "./Schedule";
+import { ProfileView } from "./Profile";
+import { GameDetail } from "./GameDetail";
+import { type View } from "../types";
+import { Tip } from "./Tip";
+
 export default function App() {
   const [view, setView] = useState<View>("dashboard");
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);

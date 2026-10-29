@@ -1,3 +1,8 @@
+import { isUpcoming } from "../utils";
+import { games, type Game } from "../data";
+import { type View } from "../types";
+import { Ico } from "./Icon";
+
 export function Dashboard({
   onNavigate,
   onGame,

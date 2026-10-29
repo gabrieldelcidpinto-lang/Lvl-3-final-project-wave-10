@@ -3,8 +3,9 @@ import Signin from "./components/Signin";
 import { Ico } from "./components/Icon";
 import { Dashboard } from "./components/Dashboard";
 import { Schedule } from "./components/Schedule";
-import { Calendar } from "./components/Calendar";
-import { Profile } from "./components/Profile";
+import { CalendarView } from "./components/Calendar";
+import { ProfileView } from "./components/Profile";
+import { Tip } from "./components/Tip";
 import "./App.css";
 
 function App() {
@@ -13,10 +14,11 @@ function App() {
       <Signup />
       <Signin />
       <Ico.grid />
-      <Dashboard />
-      <Schedule />
-      <Calendar />
-      <Profile />
+      <Dashboard onNavigate={() => {}} onGame={() => {}} />
+      <Schedule onGame={() => {}} />
+      <CalendarView onGame={() => {}} />
+      <ProfileView />
+      <Tip />
     </div> // I don't understand why it had to be Ico.grid. Is it because it is carrying images and not a function itself?
   );
 }
