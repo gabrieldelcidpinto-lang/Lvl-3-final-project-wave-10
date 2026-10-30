@@ -1,9 +1,10 @@
 import { isUpcoming } from "../utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { games, type Game } from "../data";
 import { Ico } from "./Icon";
 import { StatusBadge } from "./SatusBadge";
 import { fmtShort } from "../utils";
+import { supabase } from "../config/supabaseClient";
 
 export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
   const [tab, setTab] = useState<"all" | "upcoming" | "past">("all");
@@ -22,6 +23,18 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
       )
     );
   });
+
+  //This useEffect function asks supabase for all the games inside the game table once. [] runs the code once when the page loads and not one very render.
+
+  useEffect(() => {
+    async function loadGames() {
+      const { data, error } = await supabase.from("games").select("*");
+      console.log("data:", data);
+      console.error("error:", error);
+    }
+
+    loadGames();
+  }, []);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
