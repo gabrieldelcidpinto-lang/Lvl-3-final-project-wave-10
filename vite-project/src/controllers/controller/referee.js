@@ -74,7 +74,7 @@ export const updateRefereeProfile = async (req, res) => {
     .update({
       name: req.body.name,
       email: req.body.email,
-      email: req.body.email,
+      phone: req.body.phone,
     })
     .eq("id", id)
     .select()

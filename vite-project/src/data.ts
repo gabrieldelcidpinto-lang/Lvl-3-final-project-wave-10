@@ -117,7 +117,7 @@ export const assigner: Official = {
   type: "assigner",
 };
 
-export const games: Game[] = [
+export const gamelist: Game[] = [
   {
     id: "G-2026-0841",
     date: "2026-10-03",

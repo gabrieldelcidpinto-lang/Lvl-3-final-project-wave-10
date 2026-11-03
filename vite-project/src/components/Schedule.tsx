@@ -1,6 +1,6 @@
 import { isUpcoming } from "../utils";
 import { useState, useEffect } from "react";
-import { games, type Game } from "../data";
+import { type Game } from "../data";
 import { Ico } from "./Icon";
 import { StatusBadge } from "./SatusBadge";
 import { fmtShort } from "../utils";
@@ -10,7 +10,7 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
   const [tab, setTab] = useState<"all" | "upcoming" | "past">("all");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
-  const [gamelist, setGamelist] = useState<Game[]>([]); //setting the type to "Game" and setting it inside an empty array.
+  const [games, setGames] = useState<Game[]>([]); //setting the type to "Game" and setting it inside an empty array.
   //if games alreayd exist do I need to create this new useState and not jsut use the one already created.
   const filtered = games.filter((g) => {
     if (tab === "upcoming" && !isUpcoming(g.date)) return false;
@@ -35,7 +35,7 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
         return;
       }
       console.log(data);
-      setGamelist(data as Game[]); //What is the differece between this and line 26 inside Profile.tsx
+      setGames(data as Game[]); //What is the differece between this and line 26 inside Profile.tsx
     }
 
     loadGames();

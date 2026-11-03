@@ -1,26 +1,8 @@
 import { isUpcoming } from "../utils";
-import { games, type Game } from "../data";
+import { gamelist, type Game } from "../data";
 import { type View } from "../types";
 import { Ico } from "./Icon";
-import { useState, useEffect } from "react";
-import { supabase } from "../config/supabaseClient";
 
-const [dashboard, setDashboard] = useState("");
-
-useEffect(() => {
-  async function loadDashboard() {
-    const { data: games, error: e1 } = await supabase.from("games").select("*");
-    const { data: profiles, error: e2 } = await supabase
-      .from("profiles")
-      .select("*");
-    const { data: assignments, error: e3 } = await supabase
-      .from("assignment")
-      .select("*");
-    const { data: calendarBlock, error: e4 } = await supabase
-      .from("calendar_blocks")
-      .select("*");
-  }
-});
 export function Dashboard({
   onNavigate,
   onGame,
@@ -28,7 +10,7 @@ export function Dashboard({
   onNavigate: (v: View) => void;
   onGame: (g: Game) => void;
 }) {
-  const upcoming = games.filter(
+  const upcoming = gamelist.filter(
     (g) => isUpcoming(g.date) && g.status === "Accepted",
   );
 
@@ -76,7 +58,7 @@ export function Dashboard({
           {[
             {
               label: "Games Worked",
-              value: games.filter(
+              value: gamelist.filter(
                 (g) => g.status === "Accepted" && !isUpcoming(g.date),
               ).length,
               color: "var(--accent)",

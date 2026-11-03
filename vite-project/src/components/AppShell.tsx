@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Ico } from "./Icon";
-import { currentUser, games, type Game } from "../data";
+import { currentUser, gamelist, type Game } from "../data";
 import { Dashboard } from "./Dashboard";
 import { CalendarView } from "./Calendar";
 import { Schedule } from "./Schedule";
@@ -8,12 +8,26 @@ import { ProfileView } from "./Profile";
 import { GameDetail } from "./GameDetail";
 import { type View } from "../types";
 import { Tip } from "./Tip";
+import { UserAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function App() {
+  const { signOut } = UserAuth(); //find the name of this process.
   const [view, setView] = useState<View>("dashboard");
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  const naviagte = useNavigate();
 
-  const pending = games.filter((g) => g.status === "Pending").length;
+  const pending = gamelist.filter((g) => g.status === "Pending").length;
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      naviagte("/signin");
+    } catch (error) {
+      console.error(error);
+      window.alert(error);
+    }
+  };
 
   const sideNav = [
     { id: "dashboard" as View, icon: Ico.grid, label: "Dashboard" },
@@ -95,6 +109,13 @@ export default function App() {
 
         {/* Bottom */}
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <button
+            onClick={handleSignOut} //create supabase logout
+            className="sidebar-btn"
+            title="Log out"
+          >
+            Log out
+          </button>
           <button onClick={() => setView("profile")}>
             <img
               src={currentUser.photo}

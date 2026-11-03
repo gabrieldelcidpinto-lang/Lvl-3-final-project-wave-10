@@ -1,21 +1,24 @@
 import { Ico } from "./Icon";
 import { fmtShort } from "../utils";
-import { useState } from "react";
-import { games, blocks, type CalendarBlock, type Game } from "../data";
-import { useEffect } from "react";
+import { gamelist, blocks, type CalendarBlock, type Game } from "../data";
+import { useState, useEffect } from "react";
 import { supabase } from "../config/supabaseClient";
 
-useEffect(() => {
-  async function loadBlock() {
-    const { data, error } = await supabase.from("calendar_blocks").select("*");
-    console.log("Data:", data);
-    console.error("Error:", error);
-  }
-
-  loadBlock();
-}, []);
+// const [block, setBlock] = useState("");
 
 export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
+  useEffect(() => {
+    async function loadBlock() {
+      const { data, error } = await supabase
+        .from("calendar_blocks")
+        .select("*");
+      console.log("Data:", data);
+      console.error("Error:", error);
+    }
+
+    loadBlock();
+  }, []);
+
   const [year, setYear] = useState(2026);
   const [month, setMonth] = useState(9);
   const [calBlocks, setCalBlocks] = useState<CalendarBlock[]>(blocks);
@@ -141,7 +144,7 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
           ))}
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
-            const dayGames = games.filter((g) => g.date === ds(day));
+            const dayGames = gamelist.filter((g) => g.date === ds(day));
             const dayBlocks = calBlocks.filter((b) => b.date === ds(day));
             const isToday =
               today.getFullYear() === year &&
