@@ -2,6 +2,18 @@ import { Ico } from "./Icon";
 import { fmtShort } from "../utils";
 import { useState } from "react";
 import { games, blocks, type CalendarBlock, type Game } from "../data";
+import { useEffect } from "react";
+import { supabase } from "../config/supabaseClient";
+
+useEffect(() => {
+  async function loadBlock() {
+    const { data, error } = await supabase.from("calendar_blocks").select("*");
+    console.log("Data:", data);
+    console.error("Error:", error);
+  }
+
+  loadBlock();
+}, []);
 
 export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
   const [year, setYear] = useState(2026);

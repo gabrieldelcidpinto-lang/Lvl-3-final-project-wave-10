@@ -10,7 +10,8 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
   const [tab, setTab] = useState<"all" | "upcoming" | "past">("all");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
-
+  const [gamelist, setGamelist] = useState<Game[]>([]); //setting the type to "Game" and setting it inside an empty array.
+  //if games alreayd exist do I need to create this new useState and not jsut use the one already created.
   const filtered = games.filter((g) => {
     if (tab === "upcoming" && !isUpcoming(g.date)) return false;
     if (tab === "past" && isUpcoming(g.date)) return false;
@@ -25,12 +26,16 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
   });
 
   //This useEffect function asks supabase for all the games inside the game table once. [] runs the code once when the page loads and not one very render.
-
+  //Need to be inside a parent so it can be passed down to Schedule.tsx and Dashboard.tsx. Inside AppShell.tsx?
   useEffect(() => {
     async function loadGames() {
       const { data, error } = await supabase.from("games").select("*");
-      console.log("data:", data);
-      console.error("error:", error);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      console.log(data);
+      setGamelist(data as Game[]); //What is the differece between this and line 26 inside Profile.tsx
     }
 
     loadGames();

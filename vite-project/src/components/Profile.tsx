@@ -1,6 +1,63 @@
 import { currentUser } from "../data";
+import { useState, useEffect } from "react";
+import { supabase } from "../config/supabaseClient";
+
+type Profile = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  is_referee: boolean;
+  is_assigner: boolean;
+};
+
+/** 
+const [profiles, setProfiles] = useState<Profile[]>([]);
+const [loading, setLoading] = useState(true);
+
+//Do I need to select the profile based on the role?
+
+useEffect(() => {
+  async function loadProfiles() {
+    const { data, error } = await supabase.from("profiles").select("*");
+    setLoading(false);
+    if (error) {
+      console.error(error);
+      return;
+    }
+    setProfiles(data ?? []); //Use the value on the left, if the value is null, save as an empty list
+  }
+
+  loadProfiles();
+}, []); 
+
+*/
 
 export function ProfileView() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProfiles() {
+      const { data, error } = await supabase.from("profiles").select("*");
+
+      if (error) {
+        console.error(error);
+        setLoading(false);
+        return;
+      }
+
+      setProfiles(data ?? []);
+      setLoading(false);
+    }
+
+    loadProfiles();
+  }, []);
+
+  if (loading) {
+    return <div>Loading profile...</div>;
+  }
+
   function ProfileCard() {
     return (
       <div className="card overflow-hidden" style={{ maxWidth: 600 }}>
