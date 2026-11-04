@@ -1,6 +1,7 @@
 import { currentUser } from "../data";
 import { useState, useEffect } from "react";
 import { supabase } from "../config/supabaseClient";
+import NewProfileForm from "../api/profiles";
 
 type Profile = {
   id: string;

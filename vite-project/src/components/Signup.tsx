@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../config/supabaseClient";
+import { createNewProfile } from "../api/profiles";
 
 export default function Signup() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -12,14 +14,33 @@ export default function Signup() {
     e.preventDefault();
     setError("");
     setSuccess("");
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      setError("Sign up failed.");
-      console.error(error.message);
+
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanName || !cleanEmail || !password) {
+      setError("Name, email, and password required.");
       return;
     }
-    setSuccess("Sign up successful!");
-    console.log("Sign up successful!");
+
+    const { error: signUpError } = await supabase.auth.signUp({
+      email: cleanEmail,
+      password,
+    });
+    if (signUpError) {
+      setError("Sign up failed.");
+      console.error(signUpError.message);
+      return;
+    }
+
+    try {
+      await createNewProfile(cleanName, cleanEmail);
+      setSuccess("Sign up successful!");
+      console.log("Sign up successful!");
+    } catch (err) {
+      console.error(err);
+      setError("Profile could not be saved.");
+    }
   };
 
   return (
@@ -45,6 +66,15 @@ export default function Signup() {
             </button>
           </div>
           <input
+            value={name}
+            placeholder="Name"
+            className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
+            type="text"
+            required
+            onChange={(e) => setName(e.target.value)} //Updates the name state with current input
+          />
+          <input
+            value={email}
             placeholder="Email"
             className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
             type="email"
@@ -52,6 +82,7 @@ export default function Signup() {
             onChange={(e) => setEmail(e.target.value)} //Updates the email state with current input
           />
           <input
+            value={password}
             placeholder="Password"
             className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
             type="password"
