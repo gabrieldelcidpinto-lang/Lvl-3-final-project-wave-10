@@ -34,7 +34,7 @@ export default function Signup() {
     }
 
     try {
-      await createNewProfile(cleanName, cleanEmail);
+      await createNewProfile(cleanName, cleanEmail); //Calling the backend function and two variables as parameters
       setSuccess("Sign up successful!");
       console.log("Sign up successful!");
     } catch (err) {

@@ -16,6 +16,18 @@ export const createNewProfile = async (name: string, email: string) => {
   return data;
 };
 
+//GET profile
+
+export const getProfileByEmail = async (email: string) => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select()
+    .eq("email", email)
+    .single();
+  if (error) throw error;
+  return data;
+};
+
 export default function NewProfileForm() {
   //Using useState to set the name, email, and the error/success message
   const [name, setName] = useState("");
