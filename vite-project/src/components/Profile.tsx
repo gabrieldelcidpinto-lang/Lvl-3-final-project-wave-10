@@ -1,6 +1,5 @@
 import { currentUser } from "../data";
 import { useState, useEffect } from "react";
-import { supabase } from "../config/supabaseClient";
 import { UserAuth } from "../context/AuthContext";
 import { getProfileByEmail } from "../api/profiles";
 

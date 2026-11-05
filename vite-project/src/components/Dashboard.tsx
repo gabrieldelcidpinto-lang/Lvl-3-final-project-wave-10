@@ -2,6 +2,17 @@ import { isUpcoming } from "../utils";
 import { gamelist, type Game } from "../data";
 import { type View } from "../types";
 import { Ico } from "./Icon";
+import { useState, useEffect } from "react";
+import { UserAuth } from "../context/AuthContext";
+import { getProfileByEmail } from "../api/profiles";
+
+type Profile = {
+  id: string;
+  name: string;
+  email: string;
+  is_referee: boolean;
+  is_assigner: boolean;
+};
 
 export function Dashboard({
   onNavigate,
@@ -10,6 +21,30 @@ export function Dashboard({
   onNavigate: (v: View) => void;
   onGame: (g: Game) => void;
 }) {
+  const { session } = UserAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    async function loadProfile() {
+      if (session === undefined) return;
+
+      const email = session?.user.email;
+      if (!email) {
+        setProfile(null);
+        return;
+      }
+
+      try {
+        const result = await getProfileByEmail(email);
+        setProfile(result);
+      } catch (err) {
+        console.error(err);
+        setProfile(null);
+      }
+    }
+    loadProfile();
+  }, [session]);
+
   const upcoming = gamelist.filter(
     (g) => isUpcoming(g.date) && g.status === "Accepted",
   );
@@ -35,7 +70,7 @@ export function Dashboard({
             }}
           >
             <div>
-              <h1 className="text-2xl font-bold">Good evening, Marcus.</h1>
+              <h1 className="text-2xl font-bold">Hello, {profile?.name}</h1>
               <p
                 className="text-sm mt-1"
                 style={{ color: "var(--text-secondary)" }}
