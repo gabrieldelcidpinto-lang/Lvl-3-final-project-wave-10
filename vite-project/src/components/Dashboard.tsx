@@ -5,6 +5,7 @@ import { Ico } from "./Icon";
 import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { getProfileByEmail } from "../api/profiles";
+import { supabase } from "../config/supabaseClient";
 
 type Profile = {
   id: string;
@@ -21,8 +22,25 @@ export function Dashboard({
   onNavigate: (v: View) => void;
   onGame: (g: Game) => void;
 }) {
+  const [games, setGames] = useState<Game[]>([]);
   const { session } = UserAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
+
+  const upcoming = games.filter((g) => isUpcoming(g.date));
+
+  useEffect(() => {
+    async function loadGames() {
+      const { data, error } = await supabase.from("games").select("*");
+      if (error) {
+        console.error(error);
+        return;
+      }
+      console.log(data);
+      setGames(data ?? []); //If there data is null, return as an empty list. "??" Only reacts to null or undefined data.
+    }
+
+    loadGames();
+  }, []);
 
   useEffect(() => {
     async function loadProfile() {
@@ -44,10 +62,6 @@ export function Dashboard({
     }
     loadProfile();
   }, [session]);
-
-  const upcoming = gamelist.filter(
-    (g) => isUpcoming(g.date) && g.status === "Accepted",
-  );
 
   return (
     <div
@@ -166,15 +180,15 @@ export function Dashboard({
               />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p className="font-semibold text-sm truncate">
-                  {g.homeTeam}{" "}
+                  {g.home_team}{" "}
                   <span style={{ color: "var(--text-muted)" }}>vs</span>{" "}
-                  {g.awayTeam}
+                  {g.away_team}
                 </p>
                 <p
                   className="text-xs mt-0.5 truncate"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  {g.venue.split("—")[0].trim()} · {g.time}
+                  {g.venue} · {g.start_time.slice(0, 5)}
                 </p>
               </div>
               <div className="text-right">
@@ -188,7 +202,7 @@ export function Dashboard({
                   className="mono text-xs"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  {g.id}
+                  {g.game_code}
                 </p>
               </div>
               <span style={{ color: "var(--text-muted)" }}>

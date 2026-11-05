@@ -19,7 +19,7 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
     const q = search.toLowerCase();
     return (
       !q ||
-      [g.homeTeam, g.awayTeam, g.venue, g.id, g.division].some((s) =>
+      [g.home_team, g.away_team, g.venue, g.id, g.division].some((s) =>
         s.toLowerCase().includes(q),
       )
     );
@@ -35,7 +35,7 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
         return;
       }
       console.log(data);
-      setGames(data as Game[]); //What is the differece between this and line 26 inside Profile.tsx
+      setGames(data ?? []); //If there data is null, return as an empty list. "??" Only reacts to null or undefined data.
     }
 
     loadGames();
@@ -153,7 +153,7 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
           <tbody>
             {filtered.map((g, i) => (
               <tr
-                key={g.id}
+                key={g.game_code}
                 onClick={() => onGame(g)}
                 style={{
                   borderTop: i > 0 ? "1px solid var(--border)" : undefined,
@@ -170,7 +170,7 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
                     className="mono text-xs"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    {g.id}
+                    {g.game_code}
                   </span>
                 </td>
                 <td style={{ padding: "14px 20px" }}>
@@ -179,7 +179,7 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
                     className="text-xs mono"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    {g.time}
+                    {g.start_time.slice(0, 5)}
                   </p>
                 </td>
                 <td
@@ -193,9 +193,9 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
                   {g.division}
                 </td>
                 <td style={{ padding: "14px 20px" }}>
-                  <p className="font-semibold text-sm">{g.homeTeam}</p>
+                  <p className="font-semibold text-sm">{g.home_team}</p>
                   <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                    vs {g.awayTeam}
+                    vs {g.away_team}
                   </p>
                 </td>
                 <td

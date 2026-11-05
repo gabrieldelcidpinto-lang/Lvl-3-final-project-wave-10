@@ -16,13 +16,13 @@ export interface Official {
 export interface Game {
   id: string;
   date: string;
-  time: string;
-  endTime: string;
+  start_time: string;
+  end_time: string;
   division: string;
   competition: string;
   format: string;
-  homeTeam: string;
-  awayTeam: string;
+  home_team: string;
+  away_team: string;
   venue: string;
   address: string;
   fee: number;
@@ -32,6 +32,7 @@ export interface Game {
   u1: Official;
   u2: Official;
   notes: string;
+  game_code: string;
 }
 
 export const currentUser: Official = {
