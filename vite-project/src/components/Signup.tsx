@@ -51,20 +51,7 @@ export default function Signup() {
           Already have an account? <Link to="/signin">Sign in</Link>
         </p>
         <div className="flex flex-col py-4">
-          <div className="flex flex-row py-4 gap-4">
-            <button
-              className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
-              type="button"
-            >
-              Assigner
-            </button>
-            <button
-              className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
-              type="button"
-            >
-              Referee
-            </button>
-          </div>
+          <div className="flex flex-row py-4 gap-4"></div>
           <input
             value={name}
             placeholder="Name"

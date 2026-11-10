@@ -209,15 +209,18 @@ export function Schedule({ onGame }: { onGame: (g: Game) => void }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {g.venue.split("—")[0].trim()}
+                  {/* {(g.venue ?? "").split("—")[0].trim()} */}
+                  {g.venue}
                 </td>
                 <td style={{ padding: "14px 20px" }}>
                   <div style={{ display: "flex" }}>
                     {[g.crewChief, g.u1, g.u2]
+                      .filter((o) => o)
                       .filter(
                         (o, idx, arr) =>
                           arr.findIndex((x) => x.id === o.id) === idx,
                       )
+
                       .slice(0, 3)
                       .map((o, oi) => (
                         <img

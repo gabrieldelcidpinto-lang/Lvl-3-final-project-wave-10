@@ -43,20 +43,7 @@ export default function Signin() {
           Don't have an account? <Link to="/signup">Sign up</Link>
         </p>
         <div className="flex flex-col py-4">
-          <div className="flex flex-row py-4 gap-4">
-            <button
-              className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
-              type="button"
-            >
-              Assigner
-            </button>
-            <button
-              className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
-              type="button"
-            >
-              Referee
-            </button>
-          </div>
+          <div className="flex flex-row py-4 gap-4"></div>
           <input
             placeholder="Email"
             className="p-3 mt-6 border border-white rounded hover:bg-gray-700 focus:bg-gray-700"
@@ -84,40 +71,3 @@ export default function Signin() {
     </div>
   );
 }
-
-/** Set loading example
- *  
-  //Put inside AuthContext.tsx under sign in?
-  const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
-
-      setSuccess("Successfully signed in!");
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1500);
-      console.log("Successfully signed in!");
-      return {
-        success: true,
-        data: data,
-        message: "Successfully signed in!",
-      };
-    } catch {
-      if (error) {
-        setError("Wrong email or password.");
-        console.error(error);
-        return;
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-}
-*/
