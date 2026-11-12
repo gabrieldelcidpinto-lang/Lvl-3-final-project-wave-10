@@ -1,7 +1,7 @@
 import { Ico } from "./Icon";
 import { fmtShort } from "../utils";
 import { gamelist, blocks, type CalendarBlock, type Game } from "../data";
-// import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../config/supabaseClient";
 
 // const [block, setBlock] = useState("");
