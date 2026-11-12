@@ -69,9 +69,9 @@ export function GameDetail({
               {game.id}
             </p>
             <h2 className="text-lg font-bold">
-              {game.homeTeam}{" "}
+              {game.home_team}{" "}
               <span style={{ color: "var(--text-muted)" }}>vs</span>{" "}
-              {game.awayTeam}
+              {game.away_team}
             </h2>
           </div>
           <button onClick={onClose} className="sidebar-btn">
@@ -87,8 +87,8 @@ export function GameDetail({
               ["Division", game.division],
               ["Format", game.format],
               ["Date", fmtDate(game.date)],
-              ["Start", game.time],
-              ["End", game.endTime],
+              ["Start", game.start_time],
+              ["End", game.end_time],
             ].map(([l, v]) => (
               <div key={l} className="card-raised p-4">
                 <p

@@ -190,7 +190,7 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
                     <div
                       key={g.id}
                       onClick={() => onGame(g)}
-                      title={`${g.homeTeam} vs ${g.awayTeam}`}
+                      title={`${g.home_team} vs ${g.away_team}`}
                       style={{
                         fontSize: 10,
                         padding: "2px 6px",
@@ -203,7 +203,7 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {g.time} {g.homeTeam.split(" ").pop()}
+                      {g.start_time} {g.home_team.split(" ").pop()}
                     </div>
                   ))}
                   {dayBlocks.slice(0, 1).map((b) => (
