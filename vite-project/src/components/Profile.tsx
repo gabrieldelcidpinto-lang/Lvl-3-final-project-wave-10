@@ -1,4 +1,4 @@
-import { currentUser } from "../data";
+// import { currentUser } from "../data";
 import { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { getProfileByEmail } from "../api/profiles";
