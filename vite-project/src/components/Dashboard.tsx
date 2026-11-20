@@ -26,17 +26,19 @@ export function Dashboard({
   const { session } = UserAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
 
+  //This should be inside a parent to pass it down to each chile (dashboard, calendar, schedule)?
   const upcoming = games.filter((g) => isUpcoming(g.date));
 
   useEffect(() => {
     async function loadGames() {
       const { data, error } = await supabase.from("games").select("*");
+
       if (error) {
         console.error(error);
         return;
       }
-      console.log(data);
-      setGames(data ?? []); //If there data is null, return as an empty list. "??" Only reacts to null or undefined data.
+
+      setGames(data ?? []);
     }
 
     loadGames();

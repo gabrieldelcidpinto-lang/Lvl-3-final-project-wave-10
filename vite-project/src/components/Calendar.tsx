@@ -1,6 +1,6 @@
 import { Ico } from "./Icon";
 import { fmtShort } from "../utils";
-import { gamelist, blocks, type CalendarBlock, type Game } from "../data";
+import { blocks, type CalendarBlock, type Game } from "../data";
 import { useEffect, useState } from "react";
 import { supabase } from "../config/supabaseClient";
 
@@ -19,10 +19,26 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
     loadBlock();
   }, []);
 
-  const [year, setYear] = useState(2026);
-  const [month, setMonth] = useState(9);
+  useEffect(() => {
+    async function loadGames() {
+      const { data, error } = await supabase.from("games").select("*");
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setGames(data ?? []);
+    }
+
+    loadGames();
+  }, []);
+
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth());
   const [calBlocks, setCalBlocks] = useState<CalendarBlock[]>(blocks);
   const [showAdd, setShowAdd] = useState(false);
+  const [games, setGames] = useState<Game[]>([]);
   const [nb, setNb] = useState({
     type: "Personal" as CalendarBlock["type"],
     date: "",
@@ -144,7 +160,7 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
           ))}
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
-            const dayGames = gamelist.filter((g) => g.date === ds(day));
+            const dayGames = games.filter((g) => g.date === ds(day));
             const dayBlocks = calBlocks.filter((b) => b.date === ds(day));
             const isToday =
               today.getFullYear() === year &&
@@ -203,7 +219,8 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {g.start_time} {g.home_team.split(" ").pop()}
+                      {g.start_time?.slice(0, 5)}{" "}
+                      {g.home_team?.split(" ").pop()}
                     </div>
                   ))}
                   {dayBlocks.slice(0, 1).map((b) => (

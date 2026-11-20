@@ -10,6 +10,9 @@ type Blocks = {
   end_time: string | null;
   profile_id: string;
 };
+
+//Post calendar block
+
 export const createNewBlock = async (block: Blocks) => {
   const { type, start_date, end_date, start_time, end_time } = block;
 
