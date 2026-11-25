@@ -26,7 +26,7 @@ export default function Signin() {
     }
     setSuccess("Successfully signed in!");
     setTimeout(() => {
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     }, 1500);
     console.log("Successfully signed in!");
     return {

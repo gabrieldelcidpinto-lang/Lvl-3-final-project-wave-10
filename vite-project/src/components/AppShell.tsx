@@ -22,7 +22,7 @@ export default function App() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      naviagte("/signin");
+      naviagte("/signin", { replace: true });
     } catch (error) {
       console.error(error);
       window.alert(error);

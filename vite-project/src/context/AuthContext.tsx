@@ -72,10 +72,13 @@ export const AuthContextProvider = ({ children }: PropsWithChildren) => {
   //Sign out
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut({ scope: "local" });
+    const { error } = await supabase.auth.signOut({ scope: "global" });
     if (error) {
       console.error("There was an error signing out: ", error);
+      throw error;
     }
+
+    setSession(null);
   };
 
   return (

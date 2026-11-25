@@ -3,10 +3,23 @@ import { fmtShort } from "../utils";
 import { blocks, type CalendarBlock, type Game } from "../data";
 import { useEffect, useState } from "react";
 import { supabase } from "../config/supabaseClient";
+import { UserAuth } from "../context/AuthContext";
+import { getProfileByEmail } from "../api/profiles";
+import { getCalendarBlocks } from "../api/calendarBlocks";
 
 // const [block, setBlock] = useState("");
+type Profile = {
+  id: string;
+  name: string;
+  email: string;
+  is_referee: boolean;
+  is_assigner: boolean;
+};
 
 export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
+  const { session } = UserAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+
   useEffect(() => {
     async function loadBlock() {
       const { data, error } = await supabase
@@ -18,6 +31,27 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
 
     loadBlock();
   }, []);
+
+  useEffect(() => {
+    async function loadProfile() {
+      if (session === undefined) return;
+
+      const email = session?.user.email;
+      if (!email) {
+        setProfile(null);
+        return;
+      }
+
+      try {
+        const result = await getProfileByEmail(email);
+        setProfile(result);
+      } catch (err) {
+        console.error(err);
+        setProfile(null);
+      }
+    }
+    loadProfile();
+  }, [session]);
 
   useEffect(() => {
     async function loadGames() {

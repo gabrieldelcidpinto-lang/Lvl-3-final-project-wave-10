@@ -34,7 +34,7 @@ export const createNewBlock = async (block: Blocks) => {
 // GET calendar block
 
 //Getting calendar_blocks by email because they will be connected to each players profile?
-export const getCalendarBlock = async (profileId: string) => {
+export const getCalendarBlocks = async (profileId: string) => {
   const { data, error } = await supabase
     .from("calendar_blocks")
     .select()
