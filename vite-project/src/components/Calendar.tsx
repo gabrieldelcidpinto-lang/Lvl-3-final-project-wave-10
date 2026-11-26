@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import { supabase } from "../config/supabaseClient";
 import { UserAuth } from "../context/AuthContext";
 import { getProfileByEmail } from "../api/profiles";
-import { getCalendarBlocks } from "../api/calendarBlocks";
+import {
+  createNewBlock,
+  deleteCalendarBlock,
+  getCalendarBlocks,
+} from "../api/calendarBlocks";
 
 // const [block, setBlock] = useState("");
 type Profile = {
@@ -114,18 +118,55 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
     Travel: "#34d399",
   };
 
-  function addBlock() {
-    if (!nb.date) return;
-    setCalBlocks((b) => [
-      ...b,
-      {
-        id: `B-${String(b.length + 1).padStart(3, "0")}`,
-        ...nb,
-        created: new Date().toISOString().split("T")[0],
-      },
-    ]);
-    setShowAdd(false);
-    setNb({ type: "Personal", date: "", startTime: "", endTime: "", note: "" });
+  async function addBlock() {
+    if (!nb.date || !profile) return;
+
+    const startTime = nb.startTime || null;
+    const endTime = nb.endTime || null;
+
+    try {
+      const createdBlock = await createNewBlock({
+        type: nb.type,
+        start_date: nb.date,
+        end_date: nb.date,
+        start_time: startTime,
+        end_time: endTime,
+        profile_id: profile.id,
+      });
+
+      setCalBlocks((blocks) => [
+        ...blocks,
+        {
+          id: String(createdBlock.id),
+          type: createdBlock.type as CalendarBlock["type"],
+          date: createdBlock.start_date,
+          startTime: createdBlock.start_time ?? "All Day",
+          endTime: createdBlock.end_time ?? "All Day",
+          created: createdBlock.created_at?.split("T")[0] ?? "",
+          note: nb.note,
+        },
+      ]);
+
+      setShowAdd(false);
+      setNb({
+        type: "Personal",
+        date: "",
+        startTime: "",
+        endTime: "",
+        note: "",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function removeBlock(id: string) {
+    try {
+      await deleteCalendarBlock(Number(id));
+      setCalBlocks((blocks) => blocks.filter((block) => block.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -381,9 +422,7 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
                           borderRadius: 10,
                           color: "var(--text-muted)",
                         }}
-                        onClick={() =>
-                          setCalBlocks((bs) => bs.filter((x) => x.id !== b.id))
-                        }
+                        onClick={() => removeBlock(b.id)}
                         onMouseEnter={(e) => (
                           (e.currentTarget.style.color = "#f87171"),
                           (e.currentTarget.style.background =

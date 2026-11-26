@@ -1,8 +1,7 @@
 import { supabase } from "../config/supabaseClient";
 
 //Post (insert) new calendar block
-type Blocks = {
-  id: number;
+export type Blocks = {
   type: string;
   start_date: string;
   end_date: string;
@@ -14,7 +13,8 @@ type Blocks = {
 //Post calendar block
 
 export const createNewBlock = async (block: Blocks) => {
-  const { type, start_date, end_date, start_time, end_time } = block;
+  const { type, start_date, end_date, start_time, end_time, profile_id } =
+    block;
 
   const { data, error } = await supabase
     .from("calendar_blocks")
@@ -24,6 +24,7 @@ export const createNewBlock = async (block: Blocks) => {
       end_date,
       start_time,
       end_time,
+      profile_id,
     })
     .select()
     .single();
