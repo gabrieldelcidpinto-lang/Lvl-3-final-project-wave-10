@@ -1,6 +1,6 @@
 import { Ico } from "./Icon";
 import { fmtShort } from "../utils";
-import { blocks, type CalendarBlock, type Game } from "../data";
+import { type CalendarBlock, type Game } from "../data";
 import { useEffect, useState } from "react";
 import { supabase } from "../config/supabaseClient";
 import { UserAuth } from "../context/AuthContext";
@@ -21,36 +21,40 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
-    async function loadBlock() {
-      const { data, error } = await supabase
-        .from("calendar_blocks")
-        .select("*");
-      console.log("Data:", data);
-      console.error("Error:", error);
-    }
-
-    loadBlock();
-  }, []);
-
-  useEffect(() => {
-    async function loadProfile() {
+    async function loadProfileAndBlocks() {
       if (session === undefined) return;
 
       const email = session?.user.email;
       if (!email) {
         setProfile(null);
+        setCalBlocks([]);
         return;
       }
 
       try {
-        const result = await getProfileByEmail(email);
-        setProfile(result);
+        const profileResult = await getProfileByEmail(email);
+        setProfile(profileResult);
+
+        const blockRows = await getCalendarBlocks(profileResult.id);
+        const calendarBlocks: CalendarBlock[] = blockRows.map((block) => ({
+          id: String(block.id),
+          type: block.type as CalendarBlock["type"],
+          date: block.start_date,
+          startTime: block.start_time ?? "All Day",
+          endTime: block.end_time ?? "All Day",
+          created: block.created_at?.split("T")[0] ?? "",
+          note: "",
+        }));
+
+        setCalBlocks(calendarBlocks);
       } catch (err) {
         console.error(err);
         setProfile(null);
+        setCalBlocks([]);
       }
     }
-    loadProfile();
+
+    loadProfileAndBlocks();
   }, [session]);
 
   useEffect(() => {
@@ -70,7 +74,7 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
 
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
-  const [calBlocks, setCalBlocks] = useState<CalendarBlock[]>(blocks);
+  const [calBlocks, setCalBlocks] = useState<CalendarBlock[]>([]);
   const [showAdd, setShowAdd] = useState(false);
   const [games, setGames] = useState<Game[]>([]);
   const [nb, setNb] = useState({
@@ -145,6 +149,8 @@ export function CalendarView({ onGame }: { onGame: (g: Game) => void }) {
         <button
           className="btn-primary flex items-center gap-2"
           onClick={() => setShowAdd(true)}
+          disabled={!profile}
+          title={!profile ? "Loading your profile..." : undefined}
         >
           <Ico.plus /> Add Block
         </button>
